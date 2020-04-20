@@ -25,3 +25,7 @@ socket.on('disconnect', function () {
 socket.on('sendMessage', function (message) {
     console.log("Trigger", message);
 });
+
+socket.on('sendPrivateMessage', function (message) {
+    console.log("Trigger", message);
+});

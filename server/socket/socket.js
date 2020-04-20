@@ -29,7 +29,13 @@ io.on('connection', (client) => {
 
         let msg = { 'user': user.name, 'message': message }
         client.broadcast.emit('sendMessage', msg);
-    })
+    });
 
+    client.on('sendPrivateMessage', (message) => {
+        let user = userController.getUser(client.id);
+        console.log('Trigger sendPrivateMessage', message)
+        let msg = { 'user': user.name, 'message': message.message }
+        client.broadcast.to(message.to).emit('sendMessage', msg);
+    })
 });
 
