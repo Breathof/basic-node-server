@@ -1,19 +1,27 @@
 var socket = io();
+
+var params = new URLSearchParams(window.location.search);
+
+if (!params.has('name')) {
+    window.location = 'index.html';
+    throw new Error('Name is required');
+}
+
+var user = { name: params.get('name') };
+
 socket.on('connect', function () {
     console.log('Connected to the server')
+    socket.emit('chatJoin', user, (response) => {
+        console.log(response);
+    })
 });
+
+
 socket.on('disconnect', function () {
     console.log('Disconnected to the server')
 });
-socket.on('send_message', function (message) {
-    console.log(message)
-});
 
-socket.emit('send_message', {
-    name: 'Clovis',
-    data: {
-        info: [1, 2, 3, 4]
-    }
-}, function () {
-    console.log('Callback')
-})
+
+socket.on('sendMessage', function (message) {
+    console.log("Trigger", message);
+});
