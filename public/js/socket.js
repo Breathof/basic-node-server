@@ -7,7 +7,7 @@ if (!params.has('name')) {
     throw new Error('Name is required');
 }
 
-var user = { name: params.get('name') };
+var user = { name: params.get('name'), room: params.get('room') };
 
 socket.on('connect', function () {
     console.log('Connected to the server')
@@ -23,9 +23,9 @@ socket.on('disconnect', function () {
 
 
 socket.on('sendMessage', function (message) {
-    console.log("Trigger", message);
+    console.log(message);
 });
 
 socket.on('sendPrivateMessage', function (message) {
-    console.log("Trigger", message);
+    console.log(message);
 });

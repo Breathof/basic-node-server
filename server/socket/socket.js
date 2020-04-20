@@ -5,17 +5,22 @@ let userController = new UserController();
 
 io.on('connection', (client) => {
     client.on('chatJoin', (data, callback) => {
-        // console.log('DATA', data);
+        console.log('DATA', data);
         if (!data.name) {
             return callback({
                 error: true,
-                msg: "Name is required"
+                msg: "Name or room is required"
             });
         }
-        userController.addUser({ "id": client.id, "name": data.name });
-        let users = userController.getUsers();
-        console.log(users);
+        client.join(data.room);
 
+        userController.addUser({ "id": client.id, "name": data.name, "room": data.room });
+        let users = data.room ?
+            userController.getRoomUsers(data.room) :
+            userController.getUsers();
+
+
+        // console.log(users);
         callback(users);
     });
 
@@ -27,8 +32,8 @@ io.on('connection', (client) => {
     client.on('sendMessage', (message) => {
         let user = userController.getUser(client.id);
 
-        let msg = { 'user': user.name, 'message': message }
-        client.broadcast.emit('sendMessage', msg);
+        let msg = { 'user': user.name, 'message': message.message }
+        client.broadcast.to(user.room).emit('sendMessage', msg);
     });
 
     client.on('sendPrivateMessage', (message) => {
